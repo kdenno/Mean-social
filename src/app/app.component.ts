@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Mean-social';
+  importedPost = [];
+  onCreate(post) {
+ this.importedPost.push(post);
+  }
 }
