@@ -1,14 +1,16 @@
 <mat-card>
-    <div>
-        <mat-form-field>
-            <input matInput type="text" [(ngModel)]="enteredTitle">
-        </mat-form-field>
-    </div>
-    <div>
-        <mat-form-field>
-            <textarea matInput cols="30" rows="10" [(ngModel)]="enteredContent"></textarea>
-        </mat-form-field>
-    </div>
-    <button mat-raised-button color="accent" (click)="onSave()">Save
+    <form (submit)="onSave(postForm)" #postForm="ngForm">
+        <div>
+            <mat-form-field>
+                <input matInput type="text" placeholder="Post Title" name="title" required ngModel>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <textarea matInput cols="30" rows="10" placeholder="Post content" name="content" required ngModel></textarea>
+            </mat-form-field>
+        </div>
+        <button mat-raised-button color="accent" type="submit" [disabled]="postForm.invalid">Save
   </button>
+    </form>
 </mat-card>
