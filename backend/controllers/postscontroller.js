@@ -10,3 +10,10 @@ exports.getPosts = (req, res, next) => {
     });
 
 }
+exports.createPosts = (req, res, next) => {
+    const post = req.body;
+    res.status().json({
+        message: 'Post created',
+        post: post
+    });
+}

@@ -18,7 +18,7 @@ export class PostCreateComponent implements OnInit {
     if (!form.valid) {
       return;
     }
-    this.postService.createPost(form.value.title, form.value.content);
+    this.postService.createPost(null, form.value.title, form.value.content);
     form.reset();
   }
 
