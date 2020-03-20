@@ -20,6 +20,19 @@ exports.createPosts = async(req, res, next) => {
     const savedPost = await post.save();
     res.status().json({
         message: 'Post created',
-        post: {...savedPost._doc, _id: savedPost._id.toString() }
+        postId: savedPost._id
     });
+}
+exports.deletePost = async(req, res, next) => {
+    const postId = req.params.Id;
+    // find post 
+    const post = await Post.find({ _id: postId });
+    if (!post) {
+        throw new Error('Post found');
+    }
+    await Post.deleteOne(postId);
+    res.status(201).json({
+        message: 'Post deleted successfully'
+    });
+
 }

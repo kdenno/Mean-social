@@ -13,6 +13,7 @@ export class PostService {
   createPost(id = null, title: string, content: string) {
     const post = { id, title, content };
     this.http.post('http://localhost:3000/api/posts', post).subscribe(responseData => {
+      post.id = responseData['postId'];
       this.posts.push(post);
       this.updatePostsSub.next(this.posts);
     });
@@ -33,6 +34,15 @@ export class PostService {
       })
     ).subscribe(transformedPosts => {
       this.posts = transformedPosts;
+      this.updatePostsSub.next([...this.posts]);
+
+    });
+
+  }
+  deletePost(postId: string) {
+    this.http.delete('http://localhost:3000/api/post/' + postId).subscribe(result => {
+      const updatedPosts = this.posts.filter(post => post.id !== postId);
+      this.posts = updatedPosts;
       this.updatePostsSub.next([...this.posts]);
 
     });
