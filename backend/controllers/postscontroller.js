@@ -1,19 +1,25 @@
-exports.getPosts = (req, res, next) => {
-    const posts = [
-        { id: '234werwer', title: 'First server post', content: 'First content from the server' },
-        { id: '2342624', title: 'Second server post', content: 'Second content from the server' },
-        { id: '335324234', title: 'Third server post', content: 'Third content from the server' }
-    ];
+const Post = require("../Models/post");
+
+exports.getPosts = async(req, res, next) => {
+    const posts = await Post().find();
+    const updatedPosts = posts.map(p => {
+        return {...p._doc, _id: p._id.toString() }
+    });
+
     res.status(200).json({
         message: 'Successful',
-        posts: posts
+        posts: updatedPosts
     });
 
 }
-exports.createPosts = (req, res, next) => {
-    const post = req.body;
+exports.createPosts = async(req, res, next) => {
+    const post = new Post({
+        title: req.body.title,
+        content: req.body.content
+    });
+    const savedPost = await post.save();
     res.status().json({
         message: 'Post created',
-        post: post
+        post: {...savedPost._doc, _id: savedPost._id.toString() }
     });
 }
