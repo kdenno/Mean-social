@@ -12,6 +12,11 @@ exports.getPosts = async(req, res, next) => {
     });
 
 }
+exports.getPost = (req, res, next) => {
+    const postId = req.params.postId;
+    const thepost = await Post.findById(postId);
+    res.status(200).json({ message: 'success', data: thepost });
+}
 exports.createPosts = async(req, res, next) => {
     const post = new Post({
         title: req.body.title,
@@ -22,6 +27,16 @@ exports.createPosts = async(req, res, next) => {
         message: 'Post created',
         postId: savedPost._id
     });
+}
+exports.updatePost = async(req, res, next) => {
+    const newPost = new Post({
+        _id: req.params.postId,
+        title: req.body.title,
+        content: req.body.content
+    });
+    const updatedPost = await Post.updateOne({ _id: req.params.postId }, newPost);
+    res.status(201).json({ message: 'update successful' });
+
 }
 exports.deletePost = async(req, res, next) => {
     const postId = req.params.Id;

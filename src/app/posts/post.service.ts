@@ -39,6 +39,26 @@ export class PostService {
     });
 
   }
+  getPost(id: string) {
+    // return { ...this.posts.find(p => p.id === id) };
+    // now since we cant return inside an observable/asynchronous task, we return the whole observable
+    return this.http.get<{ _id: string, content: string, title: string }>('http://localhost:3000/api/post/' + id);
+
+  }
+  updatePost(id: string, title: string, content: string) {
+    const post: Post = { id, content, title };
+    this.http.put('http://localhost:3000/api/post/' + id, post).subscribe(result => {
+      // update posts
+      const allPosts = [...this.posts];
+      const oldPostIndex = allPosts.findIndex(p => p.id === id);
+      // override it
+      allPosts[oldPostIndex] = post;
+      this.posts = allPosts;
+      // update the app
+      this.updatePostsSub.next([...this.posts]);
+    });
+
+  }
   deletePost(postId: string) {
     this.http.delete('http://localhost:3000/api/post/' + postId).subscribe(result => {
       const updatedPosts = this.posts.filter(post => post.id !== postId);
