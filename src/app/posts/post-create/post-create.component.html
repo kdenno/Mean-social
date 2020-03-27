@@ -1,5 +1,6 @@
 <mat-card style="margin-top: 15px;">
-    <form (submit)="onSave(postForm)" #postForm="ngForm">
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <form (submit)="onSave(postForm)" #postForm="ngForm" *ngIf="!isLoading">
         <div>
             <mat-form-field>
                 <input matInput type="text" placeholder="Post Title" name="title" required [ngModel]="post?.title">

@@ -3,11 +3,12 @@ import { Injectable, ComponentFactoryResolver } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 
 export class PostService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
   private posts: Post[] = [];
   private updatePostsSub = new Subject();
   createPost(id = null, title: string, content: string) {
@@ -15,7 +16,9 @@ export class PostService {
     this.http.post('http://localhost:3000/api/posts', post).subscribe(responseData => {
       post.id = responseData['postId'];
       this.posts.push(post);
-      this.updatePostsSub.next(this.posts);
+      // update and navigate away
+      this.updateApp([...this.posts]);
+
     });
 
 
@@ -55,7 +58,7 @@ export class PostService {
       allPosts[oldPostIndex] = post;
       this.posts = allPosts;
       // update the app
-      this.updatePostsSub.next([...this.posts]);
+      this.updateApp([...this.posts]);
     });
 
   }
@@ -67,6 +70,10 @@ export class PostService {
 
     });
 
+  }
+  updateApp(currentPosts) {
+    this.updatePostsSub.next(currentPosts);
+    this.router.navigate(['/']);
   }
 
 }
