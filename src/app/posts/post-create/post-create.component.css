@@ -10,3 +10,15 @@ textarea {
 input[type="file"] {
     visibility: hidden;
 }
+
+.imagePreview {
+    height: 8rem;
+    margin: 1rem 0;
+    width: auto;
+}
+
+.imagePreview img {
+    height: 100%;
+    display: block;
+    border-radius: 5px;
+}
