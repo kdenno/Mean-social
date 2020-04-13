@@ -1,4 +1,4 @@
-# MeanSocial
+# MEAN-CRUD App
 
 > A CRUD application built with the MEAN stack. The project implements features like Authentication, Authorization, image uploads and pagination.
 
