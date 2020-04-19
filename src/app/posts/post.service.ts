@@ -12,7 +12,7 @@ export class PostService {
   private posts: Post[] = [];
   private updatePostsSub = new Subject();
   createPost(postData) {
-    this.http.post<{message: string, post: Post}>('http://localhost:3000/api/posts', postData).subscribe(responseData => {
+    this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData).subscribe(responseData => {
       console.log(responseData);
       const post: Post = {
         id: responseData['post'].id,
@@ -50,16 +50,38 @@ export class PostService {
   getPost(id: string) {
     // return { ...this.posts.find(p => p.id === id) };
     // now since we cant return inside an observable/asynchronous task, we return the whole observable
-    return this.http.get<{ _id: string, content: string, title: string }>('http://localhost:3000/api/post/' + id);
+    return this.http.get<{ _id: string, content: string, title: string, imagePath: string }>('http://localhost:3000/api/post/' + id);
 
   }
-  updatePost(id: string, title: string, content: string, imagePath=null) {
-    const post: Post = { id, content, title, imagePath };
-    this.http.put('http://localhost:3000/api/post/' + id, post).subscribe(result => {
+  updatePost(id: string, title: string, content: string, image: string | File) {
+    let postData: Post | FormData;
+    if (typeof image === 'object') {
+      postData = new FormData();
+      postData.append('id', id);
+      postData.append('title', title);
+      postData.append('content', content);
+      postData.append('image', image, title);
+
+    } else {
+      postData = {
+        id,
+        content,
+        title,
+        imagePath: image
+       }
+
+    }
+    this.http.put('http://localhost:3000/api/post/' + id, postData).subscribe(result => {
       // update posts
       const allPosts = [...this.posts];
       const oldPostIndex = allPosts.findIndex(p => p.id === id);
       // override it
+      const post: Post = {
+        id,
+        content,
+        title,
+        imagePath: result['data'].imagePath
+       };
       allPosts[oldPostIndex] = post;
       this.posts = allPosts;
       // update the app

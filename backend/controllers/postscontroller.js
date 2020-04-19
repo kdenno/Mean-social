@@ -22,7 +22,7 @@ exports.getPost = async(req, res, next) => {
     const postId = req.params.postId;
     try {
         const thepost = await Post.findById(postId);
-        res.status(200).json({ message: 'success', data: thepost._doc });
+        res.status(200).json({ message: 'success', data: {...thepost._doc, _id: thepost._id.toString() } });
 
     } catch (error) {
         console.log(error);
@@ -51,14 +51,24 @@ exports.createPosts = async(req, res, next) => {
 
 }
 exports.updatePost = async(req, res, next) => {
+    let imagePath;
+    if (req.file) {
+        // user has set new file
+        const url = req.protocol + '://' + req.get('host');
+        imagePath = url + '/images/' + req.file.filename
+    } else {
+        imagePath = req.body.imagePath
+    }
+
     const newPost = new Post({
-        _id: req.params.postId,
+        _id: req.body.id,
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        imagePath: imagePath
     });
     try {
         const updatedPost = await Post.updateOne({ _id: req.params.postId }, newPost);
-        res.status(201).json({ message: 'update successful' });
+        res.status(201).json({ message: 'update successful', data: updatedPost });
 
     } catch (error) {
         console.log(error);
