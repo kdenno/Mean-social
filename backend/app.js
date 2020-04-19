@@ -3,13 +3,16 @@ const bodyParser = require('body-parser');
 const app = express();
 const postRoutes = require("./routes/posts");
 const mongoose = require("mongoose");
+const path = require("path");
+const dotenv = require("dotenv");
 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-const MONGODB_URI =
-    "mongodb+srv://node-complete:jZ7hhyZl5b5smXig@cluster0-k1a0c.mongodb.net/test?retryWrites=true&w=majority";
-mongoose.connect(MONGODB_URI).then(result => { console.log('Connectedt to database'); }).catch(err => { console.log(err); });
+// load env variables
+dotenv.config({ path: path.join(__dirname, "config", "config.env") });
+
+mongoose.connect(process.env.MONGO_URL).then(result => { console.log('Connected to database'); }).catch(err => { console.log(err); });
 
 
 app.use((req, res, next) => {
