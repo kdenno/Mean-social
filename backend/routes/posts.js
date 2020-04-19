@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
         if (isValid) {
             error = null;
         }
-        db(error, 'backend/images')
+        cb(error, 'backend/images')
     },
     filename: (req, file, cb) => {
         const name = file.originalname.toLocaleLowerCase().split(' ').join('-');
@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
 routes.get('/posts', postsController.getPosts);
 routes.get('/post/:postId', postsController.getPost);
 routes.put('/post/:postId', postsController.updatePost);
-routes.post('/posts', multer(storage).single("image"), postsController.createPosts);
+routes.post('/posts', multer({ storage: storage }).single("image"), postsController.createPosts);
 routes.delete('/post/:Id', postsController.deletePost);
 
 

@@ -35,7 +35,7 @@ export class PostCreateComponent implements OnInit {
         // get the post
         this.postService.getPost(this.postId).subscribe(result => {
           this.isLoading = false;
-          this.post = { id: result['data']._id, title: result['data'].title, content: result['data'].content };
+          this.post = { id: result['data']._id, title: result['data'].title, content: result['data'].content, imagePath: null };
         });
         // set init form values
         this.form.setValue({
@@ -71,7 +71,12 @@ export class PostCreateComponent implements OnInit {
     }
     this.isLoading = true;
     if (this.mode === 'create') {
-      this.postService.createPost(null, this.form.value.title, this.form.value.content);
+      const postData = new FormData();
+      console.log(this.form.value.title);
+      postData.append('title', this.form.value.title);
+      postData.append('content', this.form.value.content);
+      postData.append('image', this.form.value.image, this.form.value.title); // image is the name expected at the backend
+      this.postService.createPost(postData);
 
     } else {
       this.postService.updatePost(this.postId, this.form.value.title, this.form.value.content);

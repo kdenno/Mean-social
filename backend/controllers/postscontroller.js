@@ -22,7 +22,7 @@ exports.getPost = async(req, res, next) => {
     const postId = req.params.postId;
     try {
         const thepost = await Post.findById(postId);
-        res.status(200).json({ message: 'success', data: thepost });
+        res.status(200).json({ message: 'success', data: thepost._doc });
 
     } catch (error) {
         console.log(error);
@@ -31,15 +31,17 @@ exports.getPost = async(req, res, next) => {
 
 }
 exports.createPosts = async(req, res, next) => {
+    const url = req.protocol + '://' + req.get('host')
     const post = new Post({
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        imagePath: url + '/images/' + req.file.filename
     });
     try {
         const savedPost = await post.save();
         res.status(201).json({
             message: 'Post created',
-            postId: savedPost._id
+            post: {...savedPost, id: savedPost._id.toString() }
         });
 
     } catch (error) {

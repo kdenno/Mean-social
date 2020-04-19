@@ -9,6 +9,9 @@ const dotenv = require("dotenv");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// open access to images folder
+app.use("/images", express.static(path.join("backend/images")));
+
 // load env variables
 dotenv.config({ path: path.join(__dirname, "config", "config.env") });
 

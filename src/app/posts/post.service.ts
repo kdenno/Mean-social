@@ -11,10 +11,15 @@ export class PostService {
   constructor(private http: HttpClient, private router: Router) { }
   private posts: Post[] = [];
   private updatePostsSub = new Subject();
-  createPost(id = null, title: string, content: string) {
-    const post = { id, title, content };
-    this.http.post('http://localhost:3000/api/posts', post).subscribe(responseData => {
-      post.id = responseData['postId'];
+  createPost(postData) {
+    this.http.post<{message: string, post: Post}>('http://localhost:3000/api/posts', postData).subscribe(responseData => {
+      console.log(responseData);
+      const post: Post = {
+        id: responseData['post'].id,
+        title: responseData['post'].title,
+        content: responseData['post'].content,
+        imagePath: responseData['post'].imagePath
+      };
       this.posts.push(post);
       // update and navigate away
       this.updateApp([...this.posts]);
@@ -32,7 +37,7 @@ export class PostService {
     this.http.get<any>('http://localhost:3000/api/posts').pipe(
       map(resData => {
         return resData.posts.map(post => {
-          return { title: post.title, content: post.content, id: post._id };
+          return { title: post.title, content: post.content, id: post._id, imagePath: post.imagePath };
         });
       })
     ).subscribe(transformedPosts => {
@@ -48,8 +53,8 @@ export class PostService {
     return this.http.get<{ _id: string, content: string, title: string }>('http://localhost:3000/api/post/' + id);
 
   }
-  updatePost(id: string, title: string, content: string) {
-    const post: Post = { id, content, title };
+  updatePost(id: string, title: string, content: string, imagePath=null) {
+    const post: Post = { id, content, title, imagePath };
     this.http.put('http://localhost:3000/api/post/' + id, post).subscribe(result => {
       // update posts
       const allPosts = [...this.posts];
